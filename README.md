@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 Descripción
+## Descripción
 
 Esta herramienta fue desarrollada como parte del trabajo de titulación de la **Universidad Politécnica Salesiana — Sede Guayaquil**, en la carrera de Ingeniería en Sistemas.
 
@@ -22,7 +22,7 @@ Los pesos se ajustan dinámicamente según el perfil organizacional ingresado po
 
 ---
 
-## 🚀 Uso
+## Uso
 
 No requiere instalación. Solo necesitas un navegador web moderno.
 
@@ -41,7 +41,7 @@ Luego abre `herramienta_gestion_riesgos.html` en tu navegador.
 
 ---
 
-## ⚙️ Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - **HTML5** — estructura del contenido
 - **CSS3** — diseño visual de la interfaz
@@ -51,7 +51,7 @@ No requiere dependencias externas, frameworks ni conexión a servidores. Todo el
 
 ---
 
-## 📊 Metodologías evaluadas
+## Metodologías evaluadas
 
 | Metodología | Organismo | Año | Idioma oficial |
 |---|---|---|---|
@@ -61,7 +61,7 @@ No requiere dependencias externas, frameworks ni conexión a servidores. Todo el
 
 ---
 
-## 🗂️ Estructura del repositorio
+## Estructura del repositorio
 
 ```
 herramienta-gestion-riesgos/
@@ -72,7 +72,7 @@ herramienta-gestion-riesgos/
 
 ---
 
-## 🔍 Cómo funciona
+## Cómo funciona
 
 La herramienta sigue un proceso de tres etapas:
 
@@ -97,13 +97,13 @@ La herramienta muestra al usuario:
 
 ---
 
-## 📁 Privacidad
+## Privacidad
 
 La herramienta **no almacena, transmite ni registra** ningún dato ingresado por el usuario. Todo el procesamiento ocurre localmente en el navegador sin conexión a servidores externos.
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 - International Organization for Standardization & International Electrotechnical Commission. (2022). *ISO/IEC 27005:2022: Information security, cybersecurity and privacy protection — Guidance on managing information security risks* (4th ed.). https://www.iso.org/standard/80585.html
 
@@ -115,39 +115,11 @@ La herramienta **no almacena, transmite ni registra** ningún dato ingresado por
 
 ---
 
-## 👤 Autor
+## Autor
 
 **Carlos Alberto Orrala Mesias**
-Estudiante de Ingeniería en Sistemas
+Estudiante de Ingeniería de Sistemas
 Universidad Politécnica Salesiana — Sede Guayaquil
 Ecuador, 2026
 
----
 
-## 📄 Licencia
-
-Este proyecto está publicado bajo la licencia **MIT**.
-
-```
-MIT License
-
-Copyright (c) 2026 Carlos Alberto Orrala Mesias
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
