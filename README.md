@@ -34,10 +34,10 @@ No requiere instalación. Solo necesitas un navegador web moderno.
 
 **Opción 2 — Clonar el repositorio:**
 ```bash
-git clone https://github.com/carlosorrala95/herramienta-gestion-riesgos.git
+git clone https://github.com/carlosorrala95/herramienta-web-para-la-comparaci-n-de-metodolog-as.git
 cd herramienta-gestion-riesgos
 ```
-Luego abre `herramienta_gestion_riesgos.html` en tu navegador.
+Luego abre `herramienta gestion riesgos.html` en tu navegador.
 
 ---
 
@@ -66,7 +66,7 @@ No requiere dependencias externas, frameworks ni conexión a servidores. Todo el
 ```
 herramienta-gestion-riesgos/
 │
-├── herramienta_gestion_riesgos.html   # Herramienta principal
+├── herramienta gestion riesgos.html   # Herramienta principal
 └── README.md                          # Este archivo
 ```
 
