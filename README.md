@@ -6,7 +6,7 @@
 
 ## Descripción
 
-Esta herramienta fue desarrollada como parte del trabajo de titulación de la **Universidad Politécnica Salesiana — Sede Guayaquil**, en la carrera de Ingeniería en Sistemas.
+Esta herramienta fue desarrollada como parte del trabajo de titulación de la **Universidad Politécnica Salesiana — Sede Guayaquil**, en la carrera de Ingeniería de Sistemas.
 
 El sistema evalúa cinco criterios técnicos ponderados mediante el método de centroide por orden de rango (ROC):
 
@@ -100,18 +100,6 @@ La herramienta muestra al usuario:
 ## Privacidad
 
 La herramienta **no almacena, transmite ni registra** ningún dato ingresado por el usuario. Todo el procesamiento ocurre localmente en el navegador sin conexión a servidores externos.
-
----
-
-## Referencias
-
-- International Organization for Standardization & International Electrotechnical Commission. (2022). *ISO/IEC 27005:2022: Information security, cybersecurity and privacy protection — Guidance on managing information security risks* (4th ed.). https://www.iso.org/standard/80585.html
-
-- Joint Task Force Transformation Initiative. (2012). *NIST Special Publication 800-30 Revision 1: Guide for conducting risk assessments*. NIST. https://doi.org/10.6028/NIST.SP.800-30r1
-
-- Ministerio de Hacienda y Administraciones Públicas de España. (2012). *MAGERIT versión 3.0: Metodología de análisis y gestión de riesgos de los sistemas de información*. https://administracionelectronica.gob.es/pae_Home/pae_Documentacion/pae_Metodolog/pae_Magerit.html
-
-- Unal, N. M., & Celiktas, B. (2026). Automating cyber risk assessment with public LLMs: An expert-validated framework and comparative analysis. *IEEE Access, 14*, 47754–47778. https://doi.org/10.1109/ACCESS.2026.3678044
 
 ---
 
