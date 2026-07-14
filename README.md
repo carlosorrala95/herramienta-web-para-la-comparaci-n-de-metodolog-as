@@ -27,14 +27,14 @@ Los pesos se ajustan dinámicamente según el perfil organizacional ingresado po
 No requiere instalación. Solo necesitas un navegador web moderno.
 
 **Opción 1 — Uso directo:**
-1. Descarga el archivo `herramienta_gestion_riesgos.html`
+1. Descarga el archivo `herramienta gestion riesgos.html`
 2. Ábrelo con cualquier navegador (Chrome, Firefox o Edge)
 3. Responde las cinco preguntas del cuestionario
 4. Revisa la recomendación generada
 
 **Opción 2 — Clonar el repositorio:**
 ```bash
-git clone https://github.com/[usuario]/herramienta-gestion-riesgos.git
+git clone https://github.com/carlosorrala95/herramienta-gestion-riesgos.git
 cd herramienta-gestion-riesgos
 ```
 Luego abre `herramienta_gestion_riesgos.html` en tu navegador.
