@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramienta de Evaluación de Metodologías de Gestión de Riesgos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #f7f8fa;
+    --white: #ffffff;
+    --surface: #ffffff;
+    --surface2: #f2f4f7;
+    --border: #e2e6ed;
+    --border-light: #edf0f5;
+    --accent: #2d5be3;
+    --accent-light: #eef2fd;
+    --accent2: #3a7d5c;
+    --accent2-light: #edf7f2;
+    --muted: #8a94a6;
+    --text: #111827;
+    --text2: #4b5563;
+    --text3: #9ca3af;
+    --iso: #2d5be3;
+    --nist: #2a7a52;
+    --magerit: #7c4dab;
+    --iso-bg: #eef2fd;
+    --nist-bg: #edf7f2;
+    --magerit-bg: #f5eeff;
+    --warn: #d97706;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  header {
+    width: 100%;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 52px 24px 44px;
+    text-align: center;
+  }
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 13px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    max-width: 620px;
+    margin: 0 auto 14px;
+    letter-spacing: -0.02em;
+  }
+  header p {
+    color: var(--text2);
+    font-size: 15px;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.65;
+    font-weight: 400;
+  }
+  .method-tags {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .method-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+  .method-tag-bar {
+    width: 3px; height: 14px;
+    border-radius: 2px;
+  }
+
+  /* MAIN */
+  main {
+    width: 100%;
+    max-width: 780px;
+    padding: 36px 20px 80px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 28px; }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .progress-label { font-size: 12px; color: var(--text3); font-weight: 500; }
+  .progress-frac { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.45s ease;
+  }
+  .step-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .step-seg {
+    flex: 1; height: 2px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .step-seg.active { background: var(--accent); }
+  .step-seg.done { background: var(--accent); opacity: 0.4; }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .q-step {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: 7px;
+    letter-spacing: -0.01em;
+  }
+  .q-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 26px;
+    line-height: 1.55;
+  }
+  .options-list { display: flex; flex-direction: column; gap: 10px; }
+
+  /* Opciones con fondo alternado y borde izquierdo de color */
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 14px 16px 14px 14px;
+    border: 1.5px solid var(--border);
+    border-left: 4px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, border-left-color 0.15s;
+    background: var(--surface2);
+    text-align: left;
+    width: 100%;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+  }
+  /* Fondo alternado para cada opción */
+  .opt:nth-child(odd)  { background: #f8f9fb; }
+  .opt:nth-child(even) { background: #ffffff; }
+
+  .opt:hover {
+    border-color: #a8bbf5;
+    border-left-color: var(--accent);
+    background: #f0f4fd;
+  }
+  .opt.sel {
+    border-color: var(--accent);
+    border-left-color: var(--accent);
+    border-left-width: 5px;
+    background: var(--accent-light);
+  }
+
+  /* Número de opción visible */
+  .opt-num {
+    min-width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: var(--text3);
+    margin-top: 1px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .opt.sel .opt-num {
+    background: var(--accent);
+    color: white;
+  }
+  .opt:hover .opt-num {
+    background: #c7d8f9;
+    color: var(--accent);
+  }
+
+  .opt-circle {
+    width: 17px; height: 17px;
+    min-width: 17px;
+    border-radius: 50%;
+    border: 1.5px solid #c5cfe8;
+    margin-top: 3px;
+    position: relative;
+    transition: all 0.15s;
+    background: var(--white);
+    flex-shrink: 0;
+  }
+  .opt.sel .opt-circle {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .opt.sel .opt-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 5px; height: 5px;
+    background: white;
+    border-radius: 50%;
+  }
+  .opt-label { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .opt-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    border: none; font-family: 'Inter', sans-serif;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2449c4; }
+  .btn-primary:disabled { background: var(--border); color: var(--text3); cursor: not-allowed; }
+  .btn-outline {
+    background: transparent; color: var(--text2);
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--text3); color: var(--text); }
+  .btn-cta { background: var(--accent); color: white; }
+  .btn-cta:hover { background: #2449c4; }
+
+  /* RESULTS */
+  #results-panel { display: none; animation: slideIn 0.4s ease; }
+
+  .res-header { text-align: center; margin-bottom: 32px; }
+  .res-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px; font-weight: 400;
+    color: var(--text); margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .res-header p { font-size: 14px; color: var(--muted); }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 16px;
+  }
+
+  /* PROFILE */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+    gap: 16px;
+  }
+  .profile-item {}
+  .profile-key { font-size: 11px; color: var(--text3); margin-bottom: 3px; }
+  .profile-val { font-size: 13px; color: var(--text); font-weight: 500; }
+
+  /* WINNER */
+  .winner-wrap {
+    display: flex; align-items: flex-start; gap: 18px;
+  }
+  .winner-badge {
+    width: 52px; height: 52px; min-width: 52px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .winner-tag-sm {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .winner-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; font-weight: 400;
+    color: var(--text); margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .winner-reason { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* BAR CHART */
+  .bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { display: flex; align-items: center; gap: 14px; }
+  .bar-lbl { font-size: 12px; font-weight: 500; color: var(--text2); width: 120px; min-width: 120px; text-align: right; }
+  .bar-track { flex:1; height: 28px; background: var(--surface2); border-radius: 5px; position: relative; }
+  .bar-fill {
+    height: 100%; border-radius: 5px;
+    display: flex; align-items: center;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+  .bar-num {
+    font-size: 12px; font-weight: 700;
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text2);
+  }
+  .bar-score-out { font-size: 14px; font-weight: 700; width: 34px; }
+
+  /* RADAR */
+  .radar-wrap { display: flex; flex-direction: column; align-items: center; }
+  .radar-legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    justify-content: center; margin-top: 14px;
+  }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+  /* CRITERIA TABLE */
+  .crit-tbl { width: 100%; border-collapse: collapse; }
+  .crit-tbl th {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text3);
+    padding: 0 10px 10px 0; border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .crit-tbl th:not(:first-child) { text-align: center; }
+  .crit-tbl td {
+    padding: 10px 10px 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px; vertical-align: middle;
+  }
+  .crit-tbl tr:last-child td { border-bottom: none; }
+  .crit-tbl td:not(:first-child) { text-align: center; }
+  .crit-name { font-weight: 500; color: var(--text); }
+  .crit-w { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 28px; border-radius: 5px;
+    font-size: 13px; font-weight: 700;
+  }
+  .chip-5 { background: #e6f4ee; color: #1e7a45; }
+  .chip-4 { background: #e8eefb; color: #2d5be3; }
+  .chip-3 { background: #fdf3e3; color: #b45309; }
+  .chip-2 { background: #f3ecfa; color: #7c4dab; }
+  .chip-1 { background: #fde8e8; color: #b91c1c; }
+
+  /* RANKING */
+  .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+  .ranking-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+  }
+  .ranking-row.r1 { border-color: #a8bbf5; background: var(--accent-light); }
+  .ranking-pos {
+    font-size: 18px; font-weight: 700;
+    font-family: 'DM Serif Display', serif;
+    width: 28px; text-align: center;
+    color: var(--text3);
+  }
+  .ranking-row.r1 .ranking-pos { color: var(--accent); }
+  .ranking-info { flex: 1; }
+  .ranking-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .ranking-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .ranking-right { text-align: right; }
+  .ranking-score { font-size: 18px; font-weight: 700; }
+  .ranking-porcentaje { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .restart-row { text-align: center; margin-top: 8px; }
+
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+  @media(max-width:580px){
+    .q-card { padding: 24px 20px; }
+    .bar-lbl { width: 80px; min-width: 80px; font-size: 11px; }
+    .winner-wrap { flex-direction: column; }
+    .profile-grid { grid-template-columns: 1fr 1fr; }
+    header h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow"><div class="eyebrow-dot"></div>Herramienta de Evaluación</div>
+  <h1>Metodologías de Gestión de Riesgos</h1>
+  <p>Cinco preguntas sobre tu organización. Una recomendación técnica fundamentada para seleccionar el marco más adecuado a tu contexto.</p>
+  <div class="method-tags">
+    <div class="method-tag"><div class="method-tag-bar" style="background:#2d5be3"></div>ISO/IEC 27005</div>
+    <div class="method-tag"><div class="method-tag-bar" style="background:#2a7a52"></div>NIST SP 800-30</div>
+    <div class="method-tag"><div class="method-tag-bar" style="background:#7c4dab"></div>MAGERIT v3</div>
+  </div>
+</header>
+
+<main>
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label">Cuestionario de perfil organizacional</span>
+      <span class="progress-frac" id="prog-frac">1 / 5</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:20%"></div></div>
+  </div>
+
+  <div id="q-panel">
+    <div class="q-card" id="q-card">
+      <div class="q-step" id="q-step">Pregunta 01 de 05</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-hint" id="q-hint"></div>
+      <div class="options-list" id="opts"></div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-outline" id="btn-back" onclick="preguntaAnterior()">← Anterior</button>
+      <button class="btn btn-primary" id="btn-next" onclick="siguientePregunta()" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <div id="results-panel">
+    <div class="res-header">
+      <h2>Evaluación completada</h2>
+      <p>Resultados calculados según tu perfil organizacional</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Perfil organizacional ingresado</div>
+      <div class="profile-grid" id="profile-grid"></div>
+    </div>
+
+    <div class="card" id="winner-card">
+      <div class="card-title">Metodología recomendada</div>
+      <div class="winner-wrap">
+        <div class="winner-badge" id="winner-badge"></div>
+        <div>
+          <div class="winner-tag-sm" id="winner-tag-sm"></div>
+          <div class="winner-name" id="winner-name"></div>
+          <div class="winner-reason" id="winner-reason"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Puntaje total ponderado</div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="card" style="display:none">
+      <div class="card-title">Comparación por criterio</div>
+      <div class="radar-wrap">
+        <canvas id="radar" width="400" height="340"></canvas>
+        <div class="radar-legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#2d5be3"></div>ISO/IEC 27005</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#2a7a52"></div>NIST SP 800-30</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#7c4dab"></div>MAGERIT</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Detalle de criterios, pesos y puntuaciones</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.5">
+        Los pesos mostrados corresponden al perfil organizacional ingresado y pueden diferir de los pesos base ROC 
+        porque se ajustan dinámicamente según el sector, tamaño, madurez, activos y recursos de cada organización.
+      </p>
+      <table class="crit-tbl">
+        <thead>
+          <tr>
+            <th>Criterio</th>
+            <th>Peso</th>
+            <th>ISO</th>
+            <th>NIST</th>
+            <th>MAG</th>
+          </tr>
+        </thead>
+        <tbody id="crit-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ranking final</div>
+      <div class="rank-list" id="rank-list"></div>
+    </div>
+
+    <div class="restart-row">
+      <button class="btn btn-outline" onclick="reiniciar()" style="margin-top:8px">↺ Evaluar otra organización</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const Qs = [
+  {
+    id:'sector', text:'¿En qué sector opera tu organización?',
+    hint:'El sector determina el marco regulatorio aplicable y el nivel de exigencia normativa sobre la gestión de riesgos.',
+    opts:[
+      {v:'publico',  l:'Sector público',       d:'Instituciones estatales, municipios, entidades gubernamentales y organismos públicos.'},
+      {v:'salud',    l:'Sector salud',                    d:'Hospitales, clínicas, laboratorios, aseguradoras de salud y entidades médicas.'},
+      {v:'financiero',l:'Sector financiero',   d:'Bancos, cooperativas, aseguradoras, y entidades del sistema financiero.'},
+      {v:'educacion',l:'Educación',                       d:'Universidades, colegios y centros de formación.'},
+      {v:'otro',     l:'Industria / Comercio / Servicios',d:'Empresas manufactureras, comerciales, tecnológicas o de servicios generales.'}
+    ]
+  },
+  {
+    id:'tamano', text:'¿Cuál es el tamaño de tu organización?',
+    hint:'El tamaño influye directamente en los recursos disponibles para implementar y mantener un marco de gestión de riesgos.',
+    opts:[
+      {v:'micro',   l:'Microempresa',     d:'Hasta 10 empleados. Recursos muy limitados.'},
+      {v:'pequena', l:'Pequeña empresa',  d:'De 11 a 50 empleados. Estructura básica de TI.'},
+      {v:'mediana', l:'Mediana empresa',  d:'De 51 a 200 empleados. Área de TI definida.'},
+      {v:'grande',  l:'Gran empresa',     d:'Más de 200 empleados. TI estructurado y posiblemente certificado.'}
+    ]
+  },
+  {
+    id:'madurez', text:'¿Qué nivel de madurez digital tiene tu organización?',
+    hint:'La madurez digital refleja la capacidad técnica y organizacional disponible para adoptar marcos complejos de gestión de riesgos.',
+    opts:[
+      {v:'baja',      l:'Baja madurez',        d:'Sin procesos formales de seguridad. TI gestionado de forma reactiva.'},
+      {v:'media_baja',l:'Madurez media-baja',  d:'Algunos controles básicos implementados pero sin metodología formal.'},
+      {v:'media',     l:'Madurez intermedia',  d:'Procesos definidos, personal con conocimiento en seguridad y controles activos.'},
+      {v:'alta',      l:'Alta madurez',        d:'Metodologías formales, personal especializado y posible certificación ISO.'}
+    ]
+  },
+  {
+    id:'activos', text:'¿Qué tipo de activos críticos gestiona principalmente?',
+    hint:'El tipo de activo define los requisitos de confidencialidad, integridad y disponibilidad que debe cubrir la metodología seleccionada.',
+    opts:[
+      {v:'datos_personales',    l:'Datos personales de ciudadanos o pacientes', d:'Información sujeta a la LOPDP u otras normativas de privacidad.'},
+      {v:'datos_financieros',   l:'Datos financieros y transaccionales',        d:'Registros contables, transacciones, información bancaria.'},
+      {v:'infraestructura',     l:'Infraestructura crítica y sistemas',         d:'Servidores, redes, sistemas ERP, plataformas de producción.'},
+      {v:'propiedad_intelectual',l:'Propiedad intelectual y datos académicos',  d:'Investigaciones, bases de datos académicas, software interno.'}
+    ]
+  },
+  {
+    id:'recursos', text:'¿Con qué recursos cuenta para implementar la metodología?',
+    hint:'Los recursos disponibles determinan cuán compleja puede ser la metodología adoptada sin comprometer su implementación efectiva.',
+    opts:[
+      {v:'muy_limitados',l:'Recursos muy limitados', d:'Sin presupuesto específico ni personal dedicado a seguridad.'},
+      {v:'limitados',    l:'Recursos limitados',     d:'Presupuesto mínimo y una persona responsable de TI de forma general.'},
+      {v:'moderados',    l:'Recursos moderados',     d:'Presupuesto definido y personal con formación en seguridad de la información.'},
+      {v:'amplios',      l:'Recursos amplios',       d:'Equipo de seguridad dedicado y posibilidad de consultoría externa.'}
+    ]
+  }
+];
+
+// ============================================================
+// CONSTANTES GLOBALES DE LA MATRIZ MULTICRITERIO
+// ============================================================
+// Nombres completos de las tres metodologías evaluadas
+const NOMBRES_COMPLETOS = { ISO:'ISO/IEC 27005', NIST:'NIST SP 800-30', MAGERIT:'MAGERIT v3' };
+
+// Colores de acento para cada metodología (usado en gráficos y tarjetas)
+const COLORES  = { ISO:'#2d5be3', NIST:'#2a7a52', MAGERIT:'#7c4dab' };
+
+// Colores de fondo suave para cada metodología
+const FONDOS   = { ISO:'#eef2fd', NIST:'#edf7f2', MAGERIT:'#f5eeff' };
+
+// Claves internas de los cinco criterios de la matriz
+const CLAVES_CRITERIOS = ['facilidad','adaptabilidad','precision','cia','pertinencia'];
+
+// Nombres visibles de los cinco criterios (mostrados en la tabla de resultados)
+const NOMBRES_CRITERIOS= ['Facilidad de implementación','Adaptabilidad organizacional','Precisión en valoración del riesgo','Alineación con tríada CIA','Pertinencia contextual'];
+
+// Variables de estado: pregunta actual y respuestas del usuario
+let preguntaActual = 0, respuestas = {};
+
+// ============================================================
+// FUNCIÓN 1: calcularPesos(a)
+// PROPÓSITO : Calcular los pesos de cada criterio según el
+//             perfil organizacional respondido por el usuario.
+// LÓGICA    : Se parte de pesos base definidos a partir de la
+//             matriz comparativa del artículo. Luego se aplican
+//             ajustes incrementales (+/-) según el sector,
+//             tamaño, madurez, tipo de activos y recursos.
+//             Al final se normaliza para que la suma sea 1.0
+// RETORNA   : Objeto con cinco claves (criterios) y sus pesos.
+// ============================================================
+function calcularPesos(perfil){
+
+  // --- PESOS BASE ROC (Rank Order Centroid, n=5) ---
+  // Fórmula: w(k) = (1/n) × Σ(1/i) para i desde k hasta n
+  // Orden: precisión(1°) > CIA(2°) > adaptabilidad(3°) > facilidad(4°) > pertinencia(5°)
+  // Fuente: Unal & Celiktas (2026); Sánchez-García et al. (2023)
+  let pesos={facilidad:.16,adaptabilidad:.19,precision:.26,cia:.24,pertinencia:.15};
+
+  // --- AJUSTE POR SECTOR ---
+  // El sector determina las exigencias regulatorias y el énfasis en cada criterio
+  if(perfil.sector==='publico')    {pesos.facilidad+=.08;pesos.pertinencia+=.03;pesos.precision-=.05;pesos.adaptabilidad-=.03;pesos.cia-=.03;}
+  if(perfil.sector==='salud')      {pesos.cia+=.02;pesos.precision+=.02;pesos.facilidad-=.02;pesos.pertinencia-=.02;}
+  if(perfil.sector==='financiero') {pesos.precision+=.05;pesos.cia+=.02;pesos.facilidad-=.05;pesos.adaptabilidad-=.02;}
+  if(perfil.sector==='educacion')  {pesos.facilidad+=.03;pesos.pertinencia+=.02;pesos.precision-=.03;pesos.cia-=.02;}
+
+  // --- AJUSTE POR TAMAÑO ---
+  // Organizaciones pequeñas priorizan facilidad; grandes priorizan precisión y CIA
+  if(perfil.tamano==='micro'||perfil.tamano==='pequena'){pesos.facilidad+=.05;pesos.adaptabilidad+=.02;pesos.precision-=.04;pesos.cia-=.03;}
+  if(perfil.tamano==='grande')     {pesos.precision+=.03;pesos.cia+=.02;pesos.facilidad-=.03;pesos.adaptabilidad-=.02;}
+
+  // --- AJUSTE POR MADUREZ DIGITAL ---
+  // Baja madurez eleva facilidad; alta madurez desplaza peso hacia precisión y CIA
+  if(perfil.madurez==='baja')      {pesos.facilidad+=.06;pesos.pertinencia+=.02;pesos.precision-=.05;pesos.cia-=.03;}
+  if(perfil.madurez==='media_baja'){pesos.facilidad+=.03;pesos.precision-=.02;pesos.cia-=.01;}
+  if(perfil.madurez==='alta')      {pesos.precision+=.04;pesos.cia+=.02;pesos.facilidad-=.04;pesos.adaptabilidad-=.02;}
+
+  // --- AJUSTE POR TIPO DE ACTIVOS CRÍTICOS ---
+  // Datos personales elevan CIA y pertinencia; infraestructura eleva adaptabilidad
+  if(perfil.activos==='datos_personales') {pesos.cia+=.03;pesos.pertinencia+=.02;pesos.facilidad-=.03;pesos.adaptabilidad-=.02;}
+  if(perfil.activos==='datos_financieros'){pesos.precision+=.03;pesos.cia+=.02;pesos.facilidad-=.03;pesos.adaptabilidad-=.02;}
+  if(perfil.activos==='infraestructura')  {pesos.adaptabilidad+=.03;pesos.precision+=.02;pesos.facilidad-=.03;pesos.cia-=.02;}
+
+  // --- AJUSTE POR RECURSOS DISPONIBLES ---
+  // Recursos muy limitados aumentan la importancia de facilidad y pertinencia contextual
+  if(perfil.recursos==='muy_limitados')   {pesos.facilidad+=.07;pesos.pertinencia+=.02;pesos.precision-=.05;pesos.cia-=.04;}
+  if(perfil.recursos==='limitados')       {pesos.facilidad+=.03;pesos.precision-=.02;pesos.cia-=.01;}
+  if(perfil.recursos==='amplios')         {pesos.precision+=.03;pesos.cia+=.02;pesos.facilidad-=.03;pesos.adaptabilidad-=.02;}
+
+  // --- NORMALIZACIÓN ---
+  // Se divide cada peso por la suma total para que el conjunto sume exactamente 1.0
+  const sumaPesos=Object.values(pesos).reduce((acum,val)=>acum+val,0);
+  Object.keys(pesos).forEach(criterio=>pesos[criterio]=Math.round(pesos[criterio]/sumaPesos*100)/100);
+  // Corrección de redondeo: el residuo se asigna a 'pertinencia'
+  const residuo=1-Object.values(pesos).reduce((acum,val)=>acum+val,0);
+  pesos.pertinencia=Math.round((pesos.pertinencia+residuo)*1000)/1000;
+  return pesos;
+}
+
+// ============================================================
+// FUNCIÓN 2: calcularPuntuaciones(perfil)
+// PROPÓSITO : Asignar la puntuación (1-5) de cada metodología
+//             en cada criterio, ajustada al perfil del usuario.
+// LÓGICA    : Se parte de puntuaciones base derivadas del
+//             análisis comparativo de la matriz del artículo.
+//             Luego se aplican ajustes contextuales según
+//             sector, madurez, recursos y tipo de activos.
+// RETORNA   : Objeto con tres metodologías, cada una con
+//             cinco puntuaciones (una por criterio).
+// ============================================================
+function calcularPuntuaciones(perfil){
+
+  // --- PUNTUACIONES BASE ---
+  // Derivadas de la lectura analítica de los documentos oficiales:
+  // ISO/IEC 27005:2022, NIST SP 800-30 Rev.1 y MAGERIT v3 Libros I y II
+  let puntos={
+    ISO:    {facilidad:3,adaptabilidad:5,precision:4,cia:5,pertinencia:4},
+    NIST:   {facilidad:4,adaptabilidad:4,precision:4,cia:4,pertinencia:3},
+    MAGERIT:{facilidad:3,adaptabilidad:3,precision:5,cia:5,pertinencia:4}
+  };
+
+  // --- AJUSTES CONTEXTUALES DE PUNTUACIÓN ---
+  // Sector público: MAGERIT tiene máxima pertinencia, NIST la menor
+  if(perfil.sector==='publico')    {puntos.MAGERIT.pertinencia=5;puntos.ISO.pertinencia=4;puntos.NIST.pertinencia=2;}
+  // Sector financiero: NIST sube en precisión, ISO en adaptabilidad
+  if(perfil.sector==='financiero') {puntos.NIST.precision=5;puntos.ISO.adaptabilidad=5;}
+  // Sector salud: ISO y MAGERIT alcanzan máximo en CIA por datos sensibles
+  if(perfil.sector==='salud')      {puntos.ISO.cia=5;puntos.MAGERIT.cia=5;puntos.NIST.cia=4;}
+  // Baja madurez: NIST más fácil, ISO más difícil de implementar
+  if(perfil.madurez==='baja'||perfil.madurez==='media_baja'){puntos.NIST.facilidad=4;puntos.ISO.facilidad=2;puntos.MAGERIT.facilidad=3;}
+  // Alta madurez: ISO mejora su facilidad relativa y sube en precisión
+  if(perfil.madurez==='alta')      {puntos.ISO.facilidad=3;puntos.NIST.facilidad=4;puntos.ISO.precision=5;}
+  // Recursos limitados: igual efecto que baja madurez en facilidad
+  if(perfil.recursos==='muy_limitados'||perfil.recursos==='limitados'){puntos.NIST.facilidad=4;puntos.ISO.facilidad=2;puntos.MAGERIT.facilidad=3;}
+  // Datos personales: ISO más pertinente por alineación con normativa de privacidad
+  if(perfil.activos==='datos_personales'){puntos.ISO.pertinencia=5;puntos.MAGERIT.pertinencia=4;puntos.NIST.pertinencia=3;}
+  return puntos;
+}
+
+// ============================================================
+// FUNCIÓN 3: calcularResultados(perfil)
+// PROPÓSITO : Calcular el puntaje final ponderado de cada
+//             metodología y generar el ranking de recomendación.
+// LÓGICA    : Puntaje final = Σ (puntuación_criterio × peso_criterio)
+//             para cada metodología. Se ordena de mayor a menor.
+// RETORNA   : Objeto con pesos, puntuaciones, totales y ranking.
+// ============================================================
+function calcularResultados(perfil){
+  const pesosCalculados=calcularPesos(perfil);
+  const puntosCalculados=calcularPuntuaciones(perfil);
+  const totales={};
+
+  // --- CÁLCULO DEL ÍNDICE DE ADECUACIÓN PONDERADO ---
+  // Fórmula: total[M] = Σ ( puntuacion[M][criterio] × peso[criterio] )
+  ['ISO','NIST','MAGERIT'].forEach(met=>{
+    totales[met]=Math.round(CLAVES_CRITERIOS.reduce((suma,k)=>suma+puntosCalculados[met][k]*pesosCalculados[k],0)*100)/100;
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // RANKING FINAL CON REGLA DE DESEMPATE (4 niveles en cascada)
+  // ─────────────────────────────────────────────────────────────
+  // Cuando dos o más metodologías obtienen el mismo índice
+  // de adecuación ponderado, se aplican los siguientes criterios
+  // de desempate en orden de prioridad:
+  //
+  // NIVEL 1 — Índice de adecuación ponderado total (criterio principal)
+  //   Gana la metodología con mayor suma ponderada de los cinco criterios.
+  //
+  // NIVEL 2 — Puntuación en el criterio de mayor peso del perfil
+  //   Si dos metodologías empatan en el total, se compara su puntuación
+  //   en el criterio al que el perfil organizacional asignó mayor peso.
+  //   Ejemplo: en un perfil público con baja madurez, el criterio de
+  //   mayor peso es "facilidad de implementación".
+  //
+  // NIVEL 3 — Puntuación en precisión en la valoración del riesgo
+  //   Si el empate persiste, se prioriza la metodología con mayor
+  //   puntuación en precisión, por ser la dimensión de mayor impacto
+  //   en la calidad de las decisiones de tratamiento del riesgo
+  //   (Sánchez-García et al., 2023).
+  //
+  // NIVEL 4 — Puntuación en alineación con la tríada CIA
+  //   Si el empate continúa, se da preferencia a la metodología con
+  //   mayor puntuación en CIA, por constituir el núcleo normativo
+  //   de cualquier proceso de seguridad de la información (Muñoz, 2021).
+  // ─────────────────────────────────────────────────────────────
+
+  // Identificar cuál criterio tiene el mayor peso en este perfil específico
+  // (varía según las respuestas del usuario — sector, madurez, recursos, etc.)
+  const criterioMayorPeso = Object.entries(pesosCalculados)
+    .sort((a,b) => b[1]-a[1])[0][0];
+
+  const ranking = Object.entries(totales).sort((a, b) => {
+    const metA = a[0], metB = b[0];
+
+    // NIVEL 1: comparar índice de adecuación ponderado total
+    if (b[1] !== a[1]) return b[1] - a[1];
+
+    // NIVEL 2: comparar puntuación en el criterio de mayor peso del perfil
+    const dif2 = puntosCalculados[metB][criterioMayorPeso] - puntosCalculados[metA][criterioMayorPeso];
+    if (dif2 !== 0) return dif2;
+
+    // NIVEL 3: comparar puntuación en precisión en la valoración del riesgo
+    const dif3 = puntosCalculados[metB]['precision'] - puntosCalculados[metA]['precision'];
+    if (dif3 !== 0) return dif3;
+
+    // NIVEL 4: comparar puntuación en alineación con la tríada CIA
+    return puntosCalculados[metB]['cia'] - puntosCalculados[metA]['cia'];
+  });
+
+  return {pesosCalculados, puntosCalculados, totales, ranking, criterioMayorPeso};
+}
+
+function razonGanador(winner,a){
+  const mensajes={
+    ISO:{
+      financiero:'ISO/IEC 27005 es la elección más sólida para el sector financiero con alta madurez digital. Su alineación con estándares certificables internacionales, la cobertura explícita de la tríada CIA y el rigor en la identificación y tratamiento de riesgos responden directamente a las exigencias regulatorias de este sector.',
+      salud:'Para el sector salud, ISO/IEC 27005 destaca por la protección integral de los principios de confidencialidad, integridad y disponibilidad, que son críticos para los datos de pacientes, y por su adaptabilidad a entornos con requisitos de cumplimiento normativo como la LOPDP.',
+      educacion:'ISO/IEC 27005 ofrece una estructura adaptable que se ajusta bien a entornos educativos con madurez media o alta, con soporte para la gestión de activos académicos e infraestructura tecnológica diversa.',
+      _:'ISO/IEC 27005 resulta la opción más equilibrada para tu perfil: combina rigor técnico, alineación con la tríada CIA y adaptabilidad organizacional, siendo especialmente adecuada para organizaciones con madurez digital media o alta.'
+    },
+    MAGERIT:{
+      publico:'MAGERIT es el marco de referencia para la administración pública en entornos hispanohablantes. Sus catálogos predefinidos de activos, amenazas y salvaguardas reducen la carga de implementación, y su alineación con el entorno regulatorio latinoamericano la convierte en la opción más pertinente para instituciones públicas con recursos limitados.',
+      _:'MAGERIT resulta la opción más adecuada para tu organización por su alta pertinencia contextual en América Latina, sus catálogos estructurados que facilitan el inicio del análisis, y su precisión en la valoración de activos sin requerir infraestructura técnica avanzada.'
+    },
+    NIST:{_:'NIST SP 800-30 es la recomendación para tu perfil por su claridad procedimental, facilidad de adopción gradual y amplia aceptación en el sector tecnológico. Su estructura en cuatro fases permite iniciar el proceso de gestión de riesgos sin requerir madurez organizacional previa.'}
+  };
+  const msgGanador=mensajes[winner];
+  return msgGanador[a.sector]||msgGanador['_'];
+}
+
+function descripcionRanking(m){
+  return {
+    ISO:'Estándar internacional. Alta cobertura CIA y adaptabilidad para organizaciones con madurez media-alta.',
+    NIST:'Guía procedimental técnica. Preferible cuando se requiere alineación con marcos regulatorios norteamericanos.',
+    MAGERIT:'Metodología hispanohablante con catálogos predefinidos. Óptima para contextos latinoamericanos y sector público.'
+  }[m];
+}
+
+const etiquetasRespuestas={
+  sector:{publico:'Sector público',salud:'Sector salud',financiero:'Sector financiero',educacion:'Educación',otro:'Industria / Servicios'},
+  tamano:{micro:'Microempresa',pequena:'Pequeña empresa',mediana:'Mediana empresa',grande:'Gran empresa'},
+  madurez:{baja:'Baja',media_baja:'Media-baja',media:'Intermedia',alta:'Alta'},
+  activos:{datos_personales:'Datos personales',datos_financieros:'Datos financieros',infraestructura:'Infraestructura crítica',propiedad_intelectual:'Propiedad intelectual'},
+  recursos:{muy_limitados:'Muy limitados',limitados:'Limitados',moderados:'Moderados',amplios:'Amplios'}
+};
+
+function mostrarPregunta(){
+  const q=Qs[preguntaActual];
+  document.getElementById('q-step').textContent=`Pregunta ${String(preguntaActual+1).padStart(2,'0')} de 05`;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-hint').textContent=q.hint;
+  const ol=document.getElementById('opts'); ol.innerHTML='';
+  q.opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt'+(respuestas[q.id]===o.v?' sel':'');
+    b.innerHTML=`<div class="opt-circle"></div><div><div class="opt-label">${o.l}</div><div class="opt-desc">${o.d}</div></div>`;
+    b.onclick=()=>seleccionarOpcion(q.id,o.v,b);
+    ol.appendChild(b);
+  });
+  // progress
+  const porcentaje=((preguntaActual+1)/5)*100;
+  document.getElementById('prog-fill').style.width=porcentaje+'%';
+  document.getElementById('prog-frac').textContent=`${preguntaActual+1} / 5`;
+  document.getElementById('btn-back').style.visibility=preguntaActual===0?'hidden':'visible';
+  const nb=document.getElementById('btn-next');
+  nb.textContent=preguntaActual===4?'Ver resultados →':'Siguiente →';
+  nb.disabled=!respuestas[q.id];
+}
+
+function seleccionarOpcion(qid,val,btn){
+  respuestas[qid]=val;
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('btn-next').disabled=false;
+}
+
+function siguientePregunta(){ preguntaActual<4?(preguntaActual++,mostrarPregunta()):mostrarResultados(); }
+function preguntaAnterior(){ preguntaActual>0&&(preguntaActual--,mostrarPregunta()); }
+function reiniciar(){
+  preguntaActual=0;respuestas={};
+  document.getElementById('results-panel').style.display='none';
+  document.getElementById('q-panel').style.display='block';
+  document.getElementById('progress-wrap').style.display='block';
+  mostrarPregunta();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function mostrarResultados(){
+  const resultado=calcularResultados(respuestas);
+  document.getElementById('q-panel').style.display='none';
+  document.getElementById('progress-wrap').style.display='none';
+  const rp=document.getElementById('results-panel'); rp.style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  // Profile
+  const camposPerfil={sector:'Sector',tamano:'Tamaño',madurez:'Madurez digital',activos:'Activos críticos',recursos:'Recursos'};
+  document.getElementById('profile-grid').innerHTML=Object.entries(camposPerfil).map(([k,l])=>`
+    <div class="profile-item"><div class="profile-key">${l}</div><div class="profile-val">${etiquetasRespuestas[k][respuestas[k]]||respuestas[k]}</div></div>`).join('');
+
+  // Ganador
+  const ganador=resultado.ranking[0][0];
+  const tarjetaGanador=document.getElementById('winner-card');
+  tarjetaGanador.style.borderColor='#a8bbf5';
+  tarjetaGanador.style.background=FONDOS[ganador];
+  document.getElementById('winner-badge').style.background=FONDOS[ganador];
+  document.getElementById('winner-badge').style.border=`2px solid ${COLORES[ganador]}30`;
+  document.getElementById('winner-badge').innerHTML=`<span style="font-size:22px">${{ISO:'📋',NIST:'📊',MAGERIT:'🗂️'}[ganador]}</span>`;
+  // Detectar empate para mostrar aviso de desempate
+  const puntajeGanador = resultado.ranking[0][1];
+  const hayEmpate = resultado.ranking.filter(([m,s]) => s === puntajeGanador).length > 1;
+  const etiquetaPuntaje = hayEmpate
+    ? 'Metodología recomendada · Puntaje ' + puntajeGanador.toFixed(2) + '/5 · Desempate aplicado'
+    : 'Metodología recomendada · Puntaje ' + puntajeGanador.toFixed(2) + '/5';
+
+  document.getElementById('winner-tag-sm').style.color=COLORES[ganador];
+  document.getElementById('winner-tag-sm').textContent=etiquetaPuntaje;
+  document.getElementById('winner-name').textContent=NOMBRES_COMPLETOS[ganador];
+  document.getElementById('winner-reason').textContent=razonGanador(ganador,respuestas);
+
+  // Bars — solid fills with opacity variation per rank position
+  const coloresSolidos={ISO:'#2d5be3',NIST:'#2a7a52',MAGERIT:'#7c4dab'};
+  const coloresClaro={ISO:'rgba(45,91,227,0.18)',NIST:'rgba(42,122,82,0.18)',MAGERIT:'rgba(124,77,171,0.18)'};
+  document.getElementById('bars').innerHTML=resultado.ranking.map(([m,sc],indice)=>{
+    const porcentaje=(sc/5)*100;
+    const colorRelleno = indice===0 ? coloresSolidos[m] : coloresClaro[m];
+    const medallon = indice===0 ? '🥇 ' : indice===1 ? '🥈 ' : '🥉 ';
+    return `<div class="bar-row">
+      <div class="bar-lbl">${medallon}${NOMBRES_COMPLETOS[m]}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%;background:${colorRelleno}" data-ancho="${porcentaje}"></div>
+      </div>
+      <div class="bar-score-out" style="color:${coloresSolidos[m]};min-width:42px;text-align:right">${sc.toFixed(2)}</div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{ document.querySelectorAll('.bar-fill').forEach(el=>el.style.width=el.dataset.ancho+'%'); },80);
+
+  // Tabla de criterios — 5 columnas: Criterio | Peso | ISO | NIST | MAG
+  const puntuaciones = resultado.puntosCalculados;
+  const pesos = resultado.pesosCalculados;
+  document.getElementById('crit-tbody').innerHTML = CLAVES_CRITERIOS.map(function(k, i) {
+    var pesoPorc     = Math.round(pesos[k] * 100);
+    var puntoISO     = puntuaciones['ISO'][k];
+    var puntoNIST    = puntuaciones['NIST'][k];
+    var puntoMAGERIT = puntuaciones['MAGERIT'][k];
+    return '<tr>'
+      + '<td><div class="crit-name">' + NOMBRES_CRITERIOS[i] + '</div></td>'
+      + '<td style="text-align:center;font-weight:700;color:var(--accent);font-size:13px">' + pesoPorc + '%</td>'
+      + '<td style="text-align:center"><span class="chip chip-' + puntoISO     + '">' + puntoISO     + '</span></td>'
+      + '<td style="text-align:center"><span class="chip chip-' + puntoNIST    + '">' + puntoNIST    + '</span></td>'
+      + '<td style="text-align:center"><span class="chip chip-' + puntoMAGERIT + '">' + puntoMAGERIT + '</span></td>'
+      + '</tr>';
+  }).join('');
+
+  // Ranking
+  document.getElementById('rank-list').innerHTML=resultado.ranking.map(([met,puntaje],i)=>`
+    <div class="rank-row ${i===0?'r1':''}">
+      <div class="rank-pos">${i+1}</div>
+      <div class="rank-info">
+        <div class="rank-name">${NOMBRES_COMPLETOS[met]}</div>
+        <div class="rank-desc">${descripcionRanking(met)}</div>
+      </div>
+      <div class="rank-right">
+        <div class="rank-score" style="color:${COLORES[met]}">${puntaje.toFixed(2)}</div>
+        <div class="rank-pct">${Math.round(puntaje/5*100)}% del máx.</div>
+      </div>
+    </div>`).join('');
+
+  dibujarRadar(resultado);
+}
+
+function dibujarRadar(res){
+  const lienzo=document.getElementById('radar');
+  const contexto=lienzo.getContext('2d');
+  const ANCHO=lienzo.width, ALTO=lienzo.height;
+  const centroX=ANCHO/2, centroY=ALTO/2+10;
+  const RADIO=Math.min(ANCHO,ALTO)/2-55, LADOS=5;
+  const angulos=NOMBRES_CRITERIOS.map((_,i)=>Math.PI*2*i/LADOS-Math.PI/2);
+  contexto.clearRect(0,0,ANCHO,ALTO);
+
+  // Anillos de la cuadrícula
+  for(let nivel=1;nivel<=5;nivel++){
+    const radioNivel=(nivel/5)*RADIO;
+    contexto.beginPath();
+    angulos.forEach((angulo,i)=>{
+      const x=centroX+radioNivel*Math.cos(angulo), y=centroY+radioNivel*Math.sin(angulo);
+      i===0?contexto.moveTo(x,y):contexto.lineTo(x,y);
+    });
+    contexto.closePath();
+    contexto.strokeStyle=nivel===5?'#e2e6ed':'#edf0f5';
+    contexto.lineWidth=1; contexto.stroke();
+  }
+  // Ejes
+  angulos.forEach(angulo=>{
+    contexto.beginPath(); contexto.moveTo(centroX,centroY);
+    contexto.lineTo(centroX+RADIO*Math.cos(angulo),centroY+RADIO*Math.sin(angulo));
+    contexto.strokeStyle='#e2e6ed'; contexto.lineWidth=1; contexto.stroke();
+  });
+  // Etiquetas de ejes
+  const etiquetas=['Facilidad','Adaptabilidad','Precisión','CIA','Pertinencia'];
+  angulos.forEach((angulo,i)=>{
+    const margen=20;
+    const x=centroX+(RADIO+margen)*Math.cos(angulo);
+    const y=centroY+(RADIO+margen)*Math.sin(angulo);
+    contexto.fillStyle='#8a94a6'; contexto.font='11px Inter';
+    contexto.textAlign='center'; contexto.textBaseline='middle';
+    contexto.fillText(etiquetas[i],x,y);
+  });
+
+  // Datos de cada metodología
+  [
+    {clave:'ISO',    color:'#2d5be3', relleno:'rgba(45,91,227,0.1)'},
+    {clave:'NIST',   color:'#2a7a52', relleno:'rgba(42,122,82,0.08)'},
+    {clave:'MAGERIT',color:'#7c4dab', relleno:'rgba(124,77,171,0.08)'}
+  ].forEach(({clave,color,relleno})=>{
+    const puntos=CLAVES_CRITERIOS.map((criterio,i)=>{
+      const radioNivel=(res.puntosCalculados[clave][criterio]/5)*RADIO;
+      return {x:centroX+radioNivel*Math.cos(angulos[i]), y:centroY+radioNivel*Math.sin(angulos[i])};
+    });
+    contexto.beginPath();
+    puntos.forEach((p,i)=>i===0?contexto.moveTo(p.x,p.y):contexto.lineTo(p.x,p.y));
+    contexto.closePath();
+    contexto.fillStyle=relleno; contexto.fill();
+    contexto.strokeStyle=color; contexto.lineWidth=2; contexto.stroke();
+    puntos.forEach(p=>{
+      contexto.beginPath(); contexto.arc(p.x,p.y,3.5,0,Math.PI*2);
+      contexto.fillStyle=color; contexto.fill();
+    });
+  });
+}
+
+mostrarPregunta();
+</script>
+</body>
+</html>
