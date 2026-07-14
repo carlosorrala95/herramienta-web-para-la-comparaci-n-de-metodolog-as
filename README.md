@@ -64,7 +64,7 @@ No requiere dependencias externas, frameworks ni conexión a servidores. Todo el
 ## Estructura del repositorio
 
 ```
-herramienta-gestion-riesgos/
+herramienta-web-para-la-comparaci-n-de-metodolog-as/
 │
 ├── herramienta gestion riesgos.html   # Herramienta principal
 └── README.md                          # Este archivo
